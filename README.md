@@ -17,16 +17,16 @@ Baseado no tutorial oficial: [Durable AI Agent (Temporal Learn)](https://learn.t
 O fluxo não é apenas uma chamada de API. Existe um servidor de filas (Temporal) garantindo que o "cérebro" do agente não morra.
 
 ```mermaid
-graph TD;
-    User[👤 Usuário] -->|HTTP Request| API[⚡ FastAPI Backend];
-    API -->|Start Workflow| Server[🕰️ Temporal Server];
-    Server -->|Task Queue| Worker[👷 Python Worker];
-    
-    subgraph "Worker Process"
-    Worker -->|Executa| WF[🔄 Workflow Loop];
-    WF -->|Chama| LLM[🧠 LLM / AI];
-    WF -->|Chama| Tools[🛠️ Tools (Busca Voo/Stripe)];
-    end
+flowchart TD
+  User["👤 Usuário"] -->|HTTP Request| API["⚡ FastAPI Backend"]
+  API -->|Start Workflow| Temporal["🕰️ Temporal Server"]
+  Temporal -->|Task Queue| Worker["👷 Python Worker"]
+
+  subgraph WP["Worker Process"]
+    Worker --> WF["🔄 Workflow Loop"]
+    WF --> LLM["🧠 LLM / AI"]
+    WF --> TOOLS["🛠️ Tools: Flight Search + Stripe"]
+  end
 ```
 
 > **Nota:** Se o Worker cair, o Temporal Server mantém o histórico. Ao reiniciar, o Worker retoma o Workflow exatamente de onde parou.
